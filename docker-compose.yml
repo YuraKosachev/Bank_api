@@ -1,9 +1,67 @@
-# 
-# docker-compose.yml — определяет сервисы для разработки и тестирования.
+version: '3.8'
+services:
+  postgres:
+    container_name: ms_pg_sql
+    image: postgres:17
+    environment:
+      POSTGRES_USER: effective_mobile_user
+      POSTGRES_PASSWORD: effective_mobile_password
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d/
+    ports:
+      - 5435:5432
+    networks:
+      - microservices-net
+    restart: unless-stopped
 
-Что нужно сделать:
-  - Настроить сервисы для:
-      - PostgreSQL (или MySQL) с начальной базой.
-      - Приложения Spring Boot (если нужно).
-  - Открыть нужные порты (например, 5432, 8080).
-  - Настроить volume для хранения данных БД.
+  pgadmin:
+    container_name: ms_pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "True"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - 5050:80
+    networks:
+      - microservices-net
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+  bank_api:
+    image: effective-mobile/bank-db
+    build:
+      context: .
+    container_name: bank_api_service
+    ports:
+      - "8020:8020"
+    networks:
+      - microservices-net
+    restart: on-failure
+    depends_on:
+      - postgres
+    environment:
+      BANK_BASE_URL: jdbc:postgresql://postgres:5432/bank_db
+      BANK_BASE_USERNAME: effective_mobile_user
+      BANK_BASE_PASSWORD: effective_mobile_password
+      BANK_API_PORT: 8020
+      SECURITY_CRIPTO_KEY: N2X4rP0LB6u+MksV5JLQOr+PO9vPl+2L6pOd6GZfEwU=
+      SECURITY_JWT_ISSUER: bank_api
+      SECURITY_JWT_ACCESS_TOKEN_SECRET: 5e879468423655116c1de6b4dc3e6a51ce69ac88a9b5202f3a51ba8708f7498c63c33a31d16f6f82c157bfc59b27d523f832b1a86c77b3236185f5b756f0d01f
+      SECURITY_JWT_ACCESS_TOKEN_EXPIRED: 86400000
+      SECURITY_JWT_REFRESH_TOKEN_SECRET: e8933ebc11a4405cf607719a1ea86add7b9d0e47580ce65bc2576dc9c6ce6d19646a37d5daa25490cd915e7d091f26dc8e1d8a77a649e63981b84ecdfdd32732
+      SECURITY_JWT_REFRESH_TOKEN_EXPIRED: 604800000
+networks:
+  microservices-net:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
+
