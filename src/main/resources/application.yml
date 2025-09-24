@@ -1,8 +1,48 @@
 #
 # application.yml — главный конфигурационный файл Spring Boot.
+#
+#Что нужно сделать:
+#  - Указать настройки подключения к базе данных.
+#  - Указать порт приложения.
+#  - Настроить параметры безопасности и JWT.
+#  - Включить Swagger UI.
 
-Что нужно сделать:
-  - Указать настройки подключения к базе данных.
-  - Указать порт приложения.
-  - Настроить параметры безопасности и JWT.
-  - Включить Swagger UI.
+spring:
+
+  datasource:
+    url: ${BANK_BASE_URL}
+    username: ${BANK_BASE_USERNAME}
+    password: ${BANK_BASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    enabled: true
+    default-schema: public
+    change-log: classpath:/db/migration/db.changelog-master.yml
+    password: ${spring.datasource.password}
+    user: ${spring.datasource.username}
+server:
+  port: ${BANK_API_PORT}
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    path: /
+security:
+  crypto-key: ${SECURITY_CRIPTO_KEY}
+  jwt:
+    issuer: ${SECURITY_JWT_ISSUER}
+    access-token:
+      secret-key: ${SECURITY_JWT_ACCESS_TOKEN_SECRET}
+      expired: ${SECURITY_JWT_ACCESS_TOKEN_EXPIRED} # 24 hours
+    refresh-token:
+      secret_key: ${SECURITY_JWT_REFRESH_TOKEN_SECRET}
+      expired: ${SECURITY_JWT_REFRESH_TOKEN_EXPIRED}
+task:
+  cardexpiration:
+    cron: "0 1 0 * * *"
+  blockbyrequest:
+    cron: "*/10 * * * * *"
