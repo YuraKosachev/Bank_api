@@ -1,9 +1,6 @@
 package com.example.bankcards.service;
 
-import com.example.bankcards.dto.CardBlockedRequestDto;
-import com.example.bankcards.dto.CardCreateDto;
-import com.example.bankcards.dto.CardFilter;
-import com.example.bankcards.dto.CardTransferDto;
+import com.example.bankcards.dto.*;
 import com.example.bankcards.entity.Card;
 import com.example.bankcards.enums.CardStatus;
 import com.example.bankcards.exception.AccessException;
@@ -135,6 +132,18 @@ public class CardServiceImpl implements CardService {
         targetCard.setBalance(targetCard.getBalance().add(transferDto.sum()));
 
         cardRepository.saveAll(List.of(sourceCard,targetCard));
+    }
+
+    @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public void balance(UUID accountId, BalanceDto balanceDto, boolean isAdmin) {
+        var card = cardRepository.findActiveById(balanceDto.cardId())
+                .orElseThrow(()->new ElementNotFoundException("card not found or blocked/expired"));
+        if(!card.getAccount().getId().equals(accountId) && !isAdmin) {
+            throw new AccessException("You don't have access to this card");
+        }
+        card.setBalance(card.getBalance().add(balanceDto.sum()));
+        cardRepository.save(card);
     }
 
 

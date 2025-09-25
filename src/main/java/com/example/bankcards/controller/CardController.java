@@ -141,6 +141,27 @@ public class CardController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping(ApiConstants.Card.API_CARD_BALANCE_INCREASE)
+    @Operation(
+            summary = "Update payment card balance",
+            description = """
+                  Users with the USER role can update only their own cards; ADMINs can update any card.
+                    """
+    )
+
+    @ApiResponse(description = "Success", responseCode = "204")
+    @ApiResponse(description = "Error", responseCode = "400",
+            content = {@Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorMessage.class))})
+    @ResponseBody
+    @SecurityRequirement(name = SecurityConstants.AUTH_BEARER_TOKEN)
+    public ResponseEntity<?> balanceIncrease(UsernamePasswordAuthenticationToken token,
+                                               @RequestBody @Valid BalanceDto balanceDto) {
+        var accId = PermissionUtils.getAccountId(token);
+        cardService.balance(accId, balanceDto, PermissionUtils.inRole(token, Role.ADMIN));
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping(ApiConstants.Card.API_CARD_STATUS)
     @Operation(summary = "Change the status of a payment card",
             description = """

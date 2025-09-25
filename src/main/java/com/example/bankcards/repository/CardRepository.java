@@ -19,6 +19,9 @@ public interface CardRepository extends JpaRepository<Card, UUID>, JpaSpecificat
     @Query("select c from Card c where c.id = :cardId and c.account.id = :accountId")
     Optional<Card> findByAccountId(UUID accountId, UUID cardId);
 
+    @Query("select c from Card c where c.id = :cardId and c.status = com.example.bankcards.enums.CardStatus.ACTIVE")
+    Optional<Card> findActiveById(UUID cardId);
+
     @Query("select c from Card c where c.expiredIn <= :date AND c.status <> com.example.bankcards.enums.CardStatus.EXPIRED")
     List<Card> findByExpiredIn(LocalDate date);
 

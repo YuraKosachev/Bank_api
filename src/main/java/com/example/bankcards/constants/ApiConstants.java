@@ -24,7 +24,7 @@ public final class ApiConstants {
         public static final String API_CARD_LIST = "/cards";
         public static final String API_CARD_TRANSFER = "/card/transfer";
         public static final String API_CARD_BY_ID = "/card/{id}";
-        public static final String API_CARD_BALANCE = "/card/balance";
+        public static final String API_CARD_BALANCE_INCREASE = "/card/balance/increase";
         public static final String API_CARD_STATUS = "/card/status";
         public static final String API_CARD_REQUEST_BLOCK = "/card/request/block";
     }

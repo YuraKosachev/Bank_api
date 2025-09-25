@@ -15,6 +15,7 @@ public class CardMapper {
                 .cardNumber(dto.number())
                 .account(Account.builder().id(dto.accountId()).build())
                 .expiredIn(dto.expiredIn())
+                .balance(dto.balance())
                 .build();
     }
 

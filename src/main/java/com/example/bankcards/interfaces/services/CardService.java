@@ -1,9 +1,6 @@
 package com.example.bankcards.interfaces.services;
 
-import com.example.bankcards.dto.CardBlockedRequestDto;
-import com.example.bankcards.dto.CardCreateDto;
-import com.example.bankcards.dto.CardFilter;
-import com.example.bankcards.dto.CardTransferDto;
+import com.example.bankcards.dto.*;
 import com.example.bankcards.entity.Card;
 import com.example.bankcards.enums.CardStatus;
 import com.example.bankcards.interfaces.services.base.Creatable;
@@ -22,6 +19,7 @@ public interface CardService
 {
     void changeCardStatus(UUID cardId, CardStatus newStatus);
     void transfer(UUID accountId, CardTransferDto transferDto);
+    void balance(UUID accountId, BalanceDto balanceDto, boolean isAdmin);
     void setBlockRequest(UUID accountId, CardBlockedRequestDto blockRequest);
     <T> T findById(UUID accountId, UUID id, Function<Card,T> mapper);
 }
