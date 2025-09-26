@@ -6,6 +6,7 @@
 
 - **Версия:** 1.0
 - **Базовый URL:** `http://localhost:8020`
+- **Swagger UI URL:** `http://localhost:8020/swagger-ui/index.html`
 - **OpenAPI:** 3.1.0
 - **Контакт:** y.kosachou (<zanoza.by@gmail.com>)
 
