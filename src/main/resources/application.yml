@@ -26,7 +26,7 @@ spring:
     password: ${spring.datasource.password}
     user: ${spring.datasource.username}
 server:
-  port: ${BANK_API_PORT}
+  port: ${BANK_API_PORT:8020}
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
