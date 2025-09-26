@@ -7,7 +7,6 @@
 - **Версия:** 1.0
 - **Базовый URL:** `http://localhost:8020`
 - **OpenAPI:** 3.1.0
-- **Лицензия:** [I sure we have license](https://our-license-url.com)
 - **Контакт:** y.kosachou (<zanoza.by@gmail.com>)
 
 ---
